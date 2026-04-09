@@ -1,15 +1,13 @@
 import os
 
 from typing import Literal, TypedDict
-import json
 from dotenv import load_dotenv
 from pydantic import SecretStr
 
-from langchain.messages import HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 from langgraph.types import interrupt, Command, RetryPolicy
 from langgraph.graph import StateGraph, START, END
-from langchain_community.utilities import SearchApiAPIWrapper
 from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
@@ -36,19 +34,18 @@ class EmailAgentState(TypedDict):
     messages: list[str] | None
 
 
-load_dotenv()
-
-api_key = os.getenv("SILICONFLOW_API_KEY")
-base_url = os.getenv("SILICONFLOW_BASE_URL")
-temperature = os.getenv("SILICONFLOW_TEMPERATURE", 0.2)
+api_key = os.getenv("MODEL_API_KEY")
+base_url = os.getenv("MODEL_BASE_URL")
+temperature = os.getenv("MODEL_TEMPERATURE", 0.2)
+model_name = os.getenv("MODEL_NAME", "gpt-5.4-mini")
 
 if not api_key or not base_url:
     raise ValueError(
-        "SILICONFLOW_API_KEY and SILICONFLOW_BASE_URL must be set in the .env file"
+        "MODEL_API_KEY and MODEL_BASE_URL must be set in the .env file"
     )
 
 llm = ChatOpenAI(
-    model="Pro/MiniMaxAI/MiniMax-M2.5",
+    model=model_name,
     api_key=SecretStr(api_key),
     base_url=base_url,
     temperature=float(temperature),
@@ -71,32 +68,17 @@ Analyze this customer email and classify it.
 
 Email: {state['email_content']}
 From: {state['sender_email']}
-
-Return only valid JSON with this exact schema:
-{{
-  "intent": "question | bug | billing | feature | complex",
-  "urgency": "low | medium | high | critical",
-  "topic": "short topic",
-  "summary": "short summary"
-}}
 """
 
-    response = llm.invoke(classification_prompt)
-    content = response.content.strip()
-
-    if content.startswith("```json"):
-        content = content.removeprefix("```json").removesuffix("```").strip()
-    elif content.startswith("```"):
-        content = content.removeprefix("```").removesuffix("```").strip()
-
+    structured_llm = llm.with_structured_output(EmailClassification)
     try:
-        classification = json.loads(content)
-    except json.JSONDecodeError:
+        classification = structured_llm.invoke(classification_prompt)
+    except Exception:
         classification = {
             "intent": "complex",
             "urgency": "medium",
             "topic": "unparsed",
-            "summary": content[:200],
+            "summary": state["email_content"][:200],
         }
 
     if classification["intent"] == "billing" or classification["urgency"] == "critical":
@@ -142,10 +124,7 @@ def bug_tracking(state: EmailAgentState) -> Command[Literal["draft_response"]]:
     ticket_id = "BUG-12345"
 
     return Command(
-        update={
-            "search_results": [f"Bug ticket {ticket_id} created"],
-            "current_step": "bug_tracked"
-        },
+        update={"search_results": [f"Bug ticket {ticket_id} created"]},
         goto="draft_response"
     )
 
@@ -278,5 +257,3 @@ human_response = Command(
 
 final_result = app.invoke(human_response, config)
 print(f"Email sent successfully!")
-
-

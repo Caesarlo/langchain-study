@@ -102,6 +102,15 @@ Simon Willison 的概括：当一个 agent **同时**具备
 - [ ] 理解"别只靠模型对齐"，会用至少一种**设计层防御**
 - [ ] 有 benchmark 数字证明防御有效（且没误伤正常功能）
 
+## 前沿实践包（frontier_lab/）
+
+> 把最新论文机制嫁接到本模块。总览见根目录 [`PAPERS_INTEGRATION.md`](../PAPERS_INTEGRATION.md)。
+
+- **Cordon**（2026, arXiv）→ `frontier_lab/tool_transaction.py`
+  工具**语义事务**：不可逆动作 `stage → validate → commit/rollback`，验证不过则回滚、
+  对外从未发生。把"危险动作 HITL"升级成数据库式事务，正面卡住 lethal trifecta 的"对外通信"。
+  笔记 `frontier_lab/paper_notes.md`，攻防集 `frontier_lab/eval_cases.jsonl`。
+
 ## 下一步
 → `20-reasoning-agents`：reasoning 模型（DeepSeek-R1 / o 系列 / extended thinking）
 如何改变 agent 的循环、prompt 与规划设计。

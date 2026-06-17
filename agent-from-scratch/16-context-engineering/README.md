@@ -86,6 +86,15 @@ system prompt / 工具定义 / 对话历史 / 检索内容 / scratchpad 笔记 /
 - [ ] 有数据证明 context engineering 降了 token / 提了成功率
 - [ ] scratchpad + compaction 让一个长任务跑得更稳
 
+## 前沿实践包（frontier_lab/）
+
+> 把最新论文机制嫁接到本模块。总览见根目录 [`PAPERS_INTEGRATION.md`](../PAPERS_INTEGRATION.md)。
+
+- **TokenPilot**（2026, arXiv）→ `frontier_lab/cache_context_builder.py`
+  双粒度上下文 + **prompt-cache 友好的组装顺序**：把稳定内容放前、易变内容放后，
+  最大化 prefix cache 命中。是本模块"context 组装器"的前沿升级。
+  笔记 `frontier_lab/paper_notes.md`，验证集 `frontier_lab/eval_cases.jsonl`。
+
 ## 下一步
 → `17-harness-engineering`：上下文里"放什么"解决了，接下来是模型之外那层
 **运行壳**——loop、工具运行时、文件系统、错误恢复，决定 agent 能不能真正干活。

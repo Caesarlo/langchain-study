@@ -1,0 +1,5 @@
+{"id": "tp-01", "task": "多轮研究对话:前 6 轮提供事实,第 7 轮问需回溯第 2 轮的数字", "needs_recall_turn": 2, "expect_contains": "数据点 2", "note": "测双粒度:旧轮被 digest 后仍能按 id 取回 full"}
+{"id": "tp-02", "task": "长对话:近期 4 轮 full 足以回答最新问题", "needs_recall_turn": null, "expect_contains": null, "note": "测 full_window 是否覆盖近期"}
+{"id": "tp-03", "task": "对照实验:同一历史用 build_context vs build_context_naive,比较 cache_prefix_len", "metric": "shared_prefix_chars", "expect": "build_context 的共享前缀显著更长", "note": "顺序对 cache 的影响"}
+{"id": "tp-04", "task": "token 预算:历史增长到 20 轮,双粒度组装的总长应远小于全量 full", "metric": "total_chars", "expect": "dual_granularity < full_only", "note": "压缩收益"}
+{"id": "tp-05", "task": "回溯正确性:digest 段必须带 turn#id,模型可据此请求取回 full", "metric": "id_present", "expect": true, "note": "双粒度可回溯保证"}

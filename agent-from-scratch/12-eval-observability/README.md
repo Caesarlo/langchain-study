@@ -63,5 +63,14 @@
 - [ ] 理解 LLM-as-judge 的偏差与缓解手段
 - [ ] 能用评估集发现一次回归（改坏了能测出来）
 
+## 前沿实践包（frontier_lab/）
+
+> 把最新论文机制嫁接到本模块。总览见根目录 [`PAPERS_INTEGRATION.md`](../PAPERS_INTEGRATION.md)。
+
+- **Agentic-Skills 方法论 + AgentFairBench**（2026, arXiv）→ `frontier_lab/skill_eval.py`
+  按**技能粒度**聚合成功率（定位 agent 弱在哪类技能）+ **配置矩阵**对照（量化每次改动收益）
+  + **反事实公平**子集（同任务换人口学属性看决策差异）。直接补"评估要贯穿、别等到 12"的短板。
+  笔记 `frontier_lab/paper_notes.md`，验证集 `frontier_lab/eval_cases.jsonl`。
+
 ## 下一步
 → `13-production`：把 agent 做成真正能上线的服务。

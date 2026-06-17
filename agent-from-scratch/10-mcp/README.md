@@ -35,12 +35,19 @@
 ### 5. 与前面的联系
 - MCP server 里的 tool 本质就是 `02` 的工具，只是包了标准协议外壳
 
+### 6. MCP 不自动解决生产安全
+- MCP 标准化的是**工具/资源/提示的发现与调用协议**，不是完整的生产权限系统
+- 身份传递、用户授权、最小权限、工具预算、结构化错误、审计、出站白名单仍要在
+  client / host / harness / server 侧自己设计
+- 恶意或被污染的 MCP server 也可能成为攻击面（呼应 `19-security`）
+
 ## 代表性参考
 
 - **官方文档**：`https://modelcontextprotocol.io/`
 - **官方 Python SDK**：`https://github.com/modelcontextprotocol/python-sdk`
 - Anthropic MCP 介绍博客（搜 "Introducing the Model Context Protocol"）
 - 官方 servers 示例库：`https://github.com/modelcontextprotocol/servers`
+- MCP 安全研究：关注 tool poisoning、prompt injection、权限组合导致的数据外泄
 
 ## 手撕任务
 
@@ -49,8 +56,10 @@
 1. [ ] 写一个 MCP **server**：暴露 2-3 个 tools（复用 `02` 的工具逻辑）
 2. [ ] 加一个 **resource**（如读取本地某文件）
 3. [ ] 写一个 MCP **client**，连上 server、列出并调用工具
-4. [ ]（选做）把这个 server 配进 Claude Code，实际用起来
-5. [ ] 对比：MCP 工具 vs `02` 的本地工具，多了哪些标准化收益
+4. [ ] 给工具加最小权限与审计日志：记录谁在何时用什么参数调用了什么工具
+5. [ ] 给一个外发类工具加出站白名单，验证未授权域名会被拒绝
+6. [ ]（选做）把这个 server 配进 Claude Code，实际用起来
+7. [ ] 对比：MCP 工具 vs `02` 的本地工具，多了哪些标准化收益，仍缺哪些生产能力
 
 ## 完成标准
 
@@ -58,6 +67,7 @@
 - [ ] 能讲清 tools/resources/prompts 三原语区别
 - [ ] 理解 stdio vs HTTP 传输的适用场景
 - [ ] 能说出 MCP 相比框架自定义工具的价值（M+N）
+- [ ] 能说明 MCP server 的权限、审计、出站控制应该放在哪里
 
 ## 下一步
 → `11-advanced-agents`：code agent、computer/browser use 等更强的 agent 形态。

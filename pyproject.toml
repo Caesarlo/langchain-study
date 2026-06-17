@@ -15,6 +15,7 @@ dependencies = [
     "langsmith>=0.7.20",
     "loguru>=0.7.3",
     "notebook>=7.5.5",
+    "openai>=2.30.0",
     "python-dotenv>=1.2.2",
     "uvicorn>=0.42.0",
 ]

@@ -46,11 +46,34 @@
 2. **热身练习**：基于 `common.py` 的 `chat()`，自己写一个 10 行的多轮对话循环
    （命令行里能连续问答，体会"手动维护 messages 历史"）
 
+## 手撕产出
+
+- `run.py`：手写的多轮对话循环（命令行连续问答，输入 `exit` 退出）。
+  - 骨架就三步，**记死它**——后面所有 agent 都是它的变体：
+    ```python
+    messages = [system]
+    while True:
+        messages.append(user)        # 1. 拿到新输入
+        reply = chat(messages)       # 2. 整包历史 → 模型
+        messages.append(assistant)   # 3. 把模型输出存回历史
+    ```
+  - 验证记忆生效的方法：第二句故意用指代词（"它和压电材料的区别？"），
+    模型若能接住，说明"重发历史"机制真的把上下文续上了。
+
+### 手撕时踩过的坑（都是 role / 类型边界问题）
+
+- `role` 必须精确匹配 `system/user/assistant/tool`，`assitant` 少个 `s` 会在**第二轮**才报错。
+- `input()` 返回的是**字符串**，判断退出要用它；塞进 `messages` 前才包成 dict。
+- `chat()` 返回的是 `message` 对象，存回历史要取 `reply.content` 再组装成
+  `{"role":"assistant","content":...}`，别直接 append 对象或裸字符串。
+
 ## 完成标准
 
-- [ ] `common.py` 冒烟测试通过
-- [ ] 能解释"为什么模型无状态、记忆靠重发历史"
-- [ ] 手写过一个维护 `messages` 的多轮对话循环
+- [x] `common.py` 冒烟测试通过
+- [x] 能解释"为什么模型无状态、记忆靠重发历史"
+- [x] 手写过一个维护 `messages` 的多轮对话循环
 
 ## 下一步
 → `01-react-agent`：把"多轮对话"升级成"会自己调工具、自己决定何时停"的 agent。
+本质就是在上面三步循环的第 2、3 步之间，塞一个"模型自己决定要不要调工具"的判断，
+并引入第四种 role：`tool`。

@@ -8,6 +8,7 @@
   - `client`：全局 OpenAI client（读 `.env` 的 `MODEL_*` 配置）
   - `chat(messages, tools=None, **kwargs)`：发一轮对话，**返回整个 message 对象**
     （含 `.content` 和 `.tool_calls`）——这是 agent 能判断"要不要调工具"的关键
+- `CHEATSHEET.md` —— 跨模块技术速查（消息协议、loop 骨架、决策表、失败模式、术语表）
 
 ## 使用
 

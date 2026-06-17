@@ -9,6 +9,11 @@
 一套**编号化、自包含**的 agent 学习路线。每个模块一个目录、一份 `README.md`。
 课程分两层：**纵向主线 `00 → 14`**（手撕原语，按序推进）+ **横向工程能力 `15 → 20`**
 （prompt / context / harness 工程、架构、安全、reasoning 设计，建议穿插学，见下方映射表）。
+
+> **2026 校准版总控图**：见 [`LEARNING_PLAN.md`](LEARNING_PLAN.md)。根 README 负责模块地图；
+> `LEARNING_PLAN.md` 负责每阶段的必做代码产物、评估指标、框架映射、capstone 和最新资料来源。
+> 如果目标是“对 agent 细节技术足够把握”，请按总控图的验收包推进，而不是只读完各模块。
+
 你可以随时关掉对话，下次打开新对话时，只要说
 
 > “我们继续 `03-memory`” 或 “开始 `05-planning` 的第 2 节”
@@ -22,7 +27,7 @@
 | 语言 | Python 3.13（`uv` 管理） |
 | 模型 | DeepSeek 官方接口（`deepseek-chat`，OpenAI 兼容） |
 | 底层 SDK | 官方 `openai` SDK —— 手撕阶段**不依赖任何 agent 框架** |
-| 框架（后期对照） | LangChain / LangGraph（你已有基础）、OpenAI Agents SDK 等 |
+| 框架（后期对照） | LangChain `create_agent` / LangGraph / Deep Agents / OpenAI Agents SDK 等 |
 | 共享代码 | `_shared/common.py`（最小 LLM client，所有模块复用） |
 
 `.env` 需要：`MODEL_API_KEY` / `MODEL_BASE_URL` / `MODEL_NAME` / `MODEL_TEMPERATURE`
@@ -95,12 +100,13 @@
 | `05`/`06` + `15`（有对比基础） | → `20-reasoning-agents` | 体会"换模型即换设计"，收尾横向课 |
 | `08-workflows`（建立判断力）→ 全部学完 | → `18-architecture-design` | 综合 + capstone，收尾整门课 |
 
-> **缺口分析（增补完成）**：原 `00`–`14` 在"手撕原语"上已很完整，但 prompt /
+> **缺口分析（模块层已增补）**：原 `00`–`14` 在"手撕原语"上已很完整，但 prompt /
 > context / harness 工程、架构设计、安全与 reasoning 时代设计只是零散提及。
 > 现已全部补成独立模块：✅ `15`–`18`（v2）、✅ `19-security`（v3）、
-> ✅ `20-reasoning-agents`（v4）。**计划内的缺口已补齐**——课程覆盖
+> ✅ `20-reasoning-agents`（v4）。模块地图覆盖
 > 原语 → 工程（prompt/context/harness）→ 架构 → 安全 → reasoning 全链路。
-> 后续只做一致性校对与各模块"手撕骨架"的深化，不再新增大模块。
+> 但要达到“细节足够把握”，仍需补齐每节的**代码产物、测试/eval、运行轨迹、失败复盘**；
+> 这些统一放在 [`LEARNING_PLAN.md`](LEARNING_PLAN.md)。
 
 ## 进度追踪
 

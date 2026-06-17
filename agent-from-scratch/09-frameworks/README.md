@@ -12,36 +12,54 @@
 
 ## 核心概念 / 框架地图
 
-### 1. LangGraph（你已有基础）
+### 1. LangChain `create_agent`（LangChain 1.x）
+- 最新 LangChain agents 的核心是一个可配置 harness：model + tools + prompt + middleware
+- agents 底层建在 LangGraph 上，继承 durable execution / HITL / persistence 等能力
+- 适合：想快速搭 agent loop，又希望用 middleware 控制上下文、工具、模型、guardrails
+
+### 2. LangGraph（你已有基础）
 - 图（节点 + 边 + 状态）抽象，最主流、最灵活
 - checkpointer 持久化、human-in-the-loop、streaming
 - 适合：复杂、可控、生产级编排
 
-### 2. OpenAI Agents SDK（原 Swarm 的正式版）
+### 3. Deep Agents
+- LangChain 官方 batteries-included agent：planning、subagents、虚拟文件系统、
+  context compression 等能力开箱即用
+- 适合：对照 `16-context` / `17-harness` / `18-architecture`，看工业 harness 如何组合这些能力
+
+### 4. OpenAI Responses API vs Agents SDK
+- Responses API：平台托管工具与内置能力更强，适合快速接入 OpenAI 托管工具
+- Agents SDK：服务端自己掌控 orchestration、tool execution、state、approval、MCP、tracing
+- 学习重点：理解“平台托管编排”与“自己拥有 harness”的边界
+
+### 5. OpenAI Agents SDK（原 Swarm 的正式版）
 - 轻量，核心是 handoff + guardrails + sessions
 - 适合：快速搭多 agent、OpenAI 生态
 
-### 3. CrewAI
+### 6. CrewAI
 - 角色式（role / goal / backstory / task）
 - 适合：人类直觉的"团队分工"建模
 
-### 4. LlamaIndex
+### 7. LlamaIndex
 - RAG / 数据接入最强，也有 agent 能力
 - 适合：知识密集型应用
 
-### 5. smolagents（HuggingFace）
+### 8. smolagents（HuggingFace）
 - 极简、code-agent 优先（让 LLM 写代码而非 JSON 工具调用）
 - 适合：读源码学原理、轻量 code agent
 
-### 6. AutoGen / AG2
+### 9. AutoGen / AG2
 - 多 agent 对话框架，研究氛围浓
 
-### 7. 选型维度
+### 10. 选型维度
 - 控制力 vs 易用性、生态、可观测性、生产成熟度
 
 ## 代表性参考
 
 - LangGraph 官方文档与 tutorials
+- LangChain 1.x `create_agent` / middleware / context engineering 文档
+- Deep Agents 文档与源码（根 `pyproject.toml` 已包含 `deepagents`）
+- OpenAI 平台 Agents 指南（Responses API）与 OpenAI Agents SDK 文档
 - OpenAI Agents SDK 文档：`https://github.com/openai/openai-agents-python`
 - CrewAI：`https://github.com/crewAIInc/crewAI`
 - LlamaIndex：`https://docs.llamaindex.ai/`
@@ -53,10 +71,12 @@
 > 本模块是"对照"，重点在对比而非从零撕：
 
 1. [ ] 用 LangGraph 重写 `01` 的 ReAct agent，对比你手写的循环
-2. [ ] 用 OpenAI Agents SDK（或 CrewAI）重写 `07` 的多 agent
-3. [ ] 用 smolagents 跑一个 code agent，对比"写代码"vs"调 JSON 工具"
-4. [ ] 写一份框架选型对照表（维度 × 框架）
-5. [ ]（选做）同一任务三框架各实现一遍，比代码量/可控性/调试体验
+2. [ ] 用 LangChain `create_agent` + middleware 重写 `01`，对比手写 harness 的控制点
+3. [ ] 用 Deep Agents 跑一个带文件系统 / 子 agent / context compression 的任务
+4. [ ] 用 OpenAI Agents SDK（或 CrewAI）重写 `07` 的多 agent
+5. [ ] 用 smolagents 跑一个 code agent，对比"写代码"vs"调 JSON 工具"
+6. [ ] 写一份框架选型对照表（维度 × 框架）
+7. [ ]（选做）同一任务三框架各实现一遍，比代码量/可控性/调试体验
 
 ## 完成标准
 

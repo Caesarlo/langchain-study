@@ -9,7 +9,7 @@ while True:
         break
 
     messages.append({"role": "user", "content": user})
-    reply = chat(messages=messages, temperature=0, max_tokens=50)
+    reply = chat(messages=messages, temperature=1.3, max_tokens=200)
     print(reply.content)
 
     messages.append({"role": "assistant", "content": reply.content})

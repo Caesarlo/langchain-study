@@ -60,18 +60,41 @@
   - 验证记忆生效的方法：第二句故意用指代词（"它和压电材料的区别？"），
     模型若能接住，说明"重发历史"机制真的把上下文续上了。
 
+- `01-sampling.py`：采样参数实验。同一个开放题，`temperature=0` 跑两遍措辞高度趋同
+  （确定、可复现 → agent 该用），`temperature=1.3` 明显发散。实验记录见 `output/01.md`。
+  - 严谨性要点：要对比"同一问题两次"，得**每次重启脚本只问一句**，避免多轮历史污染对照。
+
+- `02-structured.py`：结构化输出（JSON mode）。`response_format={"type":"json_object"}`
+  让模型吐合法 JSON，再 `json.loads(reply.content)` 变成 Python dict 供程序索引。
+  - 亲手踩坑：prompt 里不含 "json" 会直接报 `400 BadRequest`（见 `output/02.md`）——
+    这是 agent 把"自然语言 → 可解析字段"的关键一步。
+
+- `03-streaming.py` + `_shared/common.py::chat_stream()`：流式（SSE 分块）。
+  - `chat_stream` 是个 **generator**，逐块 `yield` 文本增量（delta），**不在地基里 print**——
+    把"怎么消费"交给调用方（打字机打印 / 写文件 / 转发前端）。数据生产与消费分离。
+  - 和 `chat()` 的本质区别：`chat()` 等全部生成完一次性返回 message；流式边收边吐，
+    整段回答 = 所有 delta 拼接。最终文本和非流式一样，区别在**过程**（用户体验）。
+
 ### 手撕时踩过的坑（都是 role / 类型边界问题）
 
 - `role` 必须精确匹配 `system/user/assistant/tool`，`assitant` 少个 `s` 会在**第二轮**才报错。
 - `input()` 返回的是**字符串**，判断退出要用它；塞进 `messages` 前才包成 dict。
 - `chat()` 返回的是 `message` 对象，存回历史要取 `reply.content` 再组装成
   `{"role":"assistant","content":...}`，别直接 append 对象或裸字符串。
+- 流式不能用 `chat()`（它写死了 `return ...message`）。要么直接用 `client`，
+  要么用 `chat_stream()`；流式里取的是 `chunk.choices[0].delta.content`（增量，非完整 message），
+  首/尾块 content 为 None 要判空跳过。
+- `from turtle import ...` 这类 IDE 误补全的 import 一旦混进公共文件 `common.py`，
+  会拖垮所有课程——看到就删。
 
 ## 完成标准
 
 - [x] `common.py` 冒烟测试通过
 - [x] 能解释"为什么模型无状态、记忆靠重发历史"
 - [x] 手写过一个维护 `messages` 的多轮对话循环
+- [x] 采样参数：动手对比 temperature 高/低的输出差异
+- [x] 结构化输出：JSON mode + `json.loads` 取字段（并踩过缺 "json" 的坑）
+- [x] 流式：`chat_stream()` generator + 调用方逐块消费
 
 ## 下一步
 → `01-react-agent`：把"多轮对话"升级成"会自己调工具、自己决定何时停"的 agent。

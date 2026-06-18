@@ -53,6 +53,41 @@ def chat(messages: list[dict], tools: list[dict] | None = None, **kwargs):
     return resp.choices[0].message
 
 
+def chat_stream(messages: list[dict], **kwargs):
+    """
+    chat() 的流式版:一个 generator,逐块 yield 文本增量(delta)。
+
+    和 chat() 的本质区别:
+    - chat() 等模型【全部生成完】才一次性返回整个 message 对象。
+    - chat_stream() 底层走 SSE,模型每生成一小块就 yield 一块文本,
+      调用方能边收边显示("打字机效果")。整段回答 = 所有 delta 拼起来。
+
+    为什么这里【不】print,而是 yield?
+    —— 公共地基不该假设调用方一定想打印到终端。把"怎么消费"的权力交出去:
+       调用方自己 for delta in chat_stream(...),决定是打印、写文件还是转发前端。
+       这就是"数据生产"与"数据消费"的分离。
+
+    用法:
+        full = ""
+        for delta in chat_stream(messages):
+            print(delta, end="", flush=True)
+            full += delta
+
+    yield: str,每次一块文本增量(已过滤掉 content 为 None 的首/尾块)
+    """
+    resp = client.chat.completions.create(
+        model=kwargs.pop("model", _MODEL_NAME),
+        messages=messages,
+        temperature=kwargs.pop("temperature", _TEMPERATURE),
+        stream=True
+    )
+
+    for chunk in resp:
+        delta = chunk.choices[0].delta.content
+        if delta:
+            yield delta
+
+
 if __name__ == "__main__":
     # 冒烟测试:确认 .env 配好了、模型能通
     msg = chat([{"role": "user", "content": "用一句话回答:你是谁?"}])

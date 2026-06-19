@@ -132,8 +132,9 @@ def run_agent(user_input: str, max_iterations: int = 5):
 
         print(f"[模型要调的工具] {[tc.function.name for tc in reply.tool_calls]}")
 
-        messages.append(
-            {"role": "assistant", "content": None, "tool_calls": reply.tool_calls})
+        # messages.append(
+        #     {"role": "assistant", "content": None, "tool_calls": reply.tool_calls})
+        messages.append(reply)
 
         for tool_call in reply.tool_calls:
             name = tool_call.function.name

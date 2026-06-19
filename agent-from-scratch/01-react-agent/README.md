@@ -6,7 +6,7 @@
 ## 学习目标
 
 - 理解 `Agent = LLM + 循环 + 工具 + 停止条件`
-- 看清你旧代码 `5-1-tool-execution-loop.py` 为什么**不是** agent（只调一轮就结束）
+- 看清你旧代码 `langchain/core-components/2-models/5-1-tool-execution-loop.py` 为什么**不是** agent（只调一轮就结束）
 - 手写 agent loop：think → act → observe → repeat
 - 掌握**退出条件**：`message.tool_calls` 为空 = 模型认为任务完成
 - 理解 ReAct 论文的 Reason + Act 交错思想
@@ -66,10 +66,10 @@
 
 ## 完成标准
 
-- [ ] 手写的 agent 能跑通**多步**任务（循环 ≥2 轮）
-- [ ] 能讲清退出条件、`tool_call_id` 的作用
-- [ ] 能指出旧代码 `5-1-tool-execution-loop.py` 的局限并说明你的版本如何解决
-- [ ] 理解 `max_iterations` 为何必要
+- [x] 手写的 agent 能跑通**多步**任务（循环 ≥2 轮）
+- [x] 能讲清退出条件、`tool_call_id` 的作用
+- [x] 能指出旧代码 `langchain/core-components/2-models/5-1-tool-execution-loop.py` 的局限并说明你的版本如何解决
+- [x] 理解 `max_iterations` 为何必要
 
 ## 下一步
 → `02-tool-use`：把"手动写工具 schema"自动化，做一个 `@tool` 装饰器。

@@ -17,6 +17,7 @@ dependencies = [
     "notebook>=7.5.5",
     "openai>=2.30.0",
     "python-dotenv>=1.2.2",
+    "sympy>=1.14.0",
     "uvicorn>=0.42.0",
 ]
 

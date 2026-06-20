@@ -112,9 +112,9 @@
 
 > 每完成一个模块，把状态改成 ✅；进行中改 🔄。
 
-- [ ] 00 · foundations
-- [ ] 01 · react-agent ⭐ 从这里开始
-- [ ] 02 · tool-use
+- [x] 00 · foundations ✅
+- [x] 01 · react-agent ⭐ ✅
+- [ ] 02 · tool-use 🔄（@tool 装饰器已撕，registry + agent 集成进行中）
 - [ ] 03 · memory
 - [ ] 04 · rag
 - [ ] 05 · planning

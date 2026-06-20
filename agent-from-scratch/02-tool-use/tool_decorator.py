@@ -15,14 +15,14 @@ def tool(func):
     required = []
 
     for pname, param in sig.parameters.items():
-        anntation = param.annotation
+        annotation = param.annotation
 
-        if anntation is inspect.Parameter.empty:
+        if annotation is inspect.Parameter.empty:
             raise TypeError(f"{name} 函数参数 {pname} 必须有类型注解")
         else:
-            if anntation not in TYPE_MAP:
-                raise ValueError(f"{name} 的参数 {pname} 类型 {anntation} 不支持")
-            p_type = TYPE_MAP[anntation]
+            if annotation not in TYPE_MAP:
+                raise ValueError(f"{name} 的参数 {pname} 类型 {annotation} 不支持")
+            p_type = TYPE_MAP[annotation]
 
         properties[pname] = {
             "type": p_type,
